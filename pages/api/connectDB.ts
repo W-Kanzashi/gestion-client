@@ -65,7 +65,6 @@ async function insert(req: any, res: any): Promise<void> {
 
 async function updateOne(req: any, res: any) {
   const data = req.body;
-  console.log(data);
   let clientInfo: any;
   /* Insert MongoDB authentication */
   const conn = connectDB();
@@ -112,6 +111,44 @@ async function updateOne(req: any, res: any) {
   }
 }
 
+async function deleteOne(req: any, res: any) {
+  const data = req.body;
+  let clientInfo: any;
+  /* Insert MongoDB authentication */
+  const conn = connectDB();
+
+  try {
+    /* Connect to Mongo database */
+    await conn.connect();
+
+    /* Use the database insertDB */
+    const database = conn.db("insertDB");
+    // Specifying a Schema is optional, but it enables type hints on
+    // finds and inserts
+    const client = database.collection<Client>("client");
+
+    /* Get the id of the client */
+    const id = { _id: sanitize(data._id) };
+
+    /* Query to database : update the client data */
+    clientInfo = await client.deleteOne(id);
+  } finally {
+    await conn.close();
+  }
+  if (clientInfo.deletedCount === 1) {
+    res.json({
+      message: "200",
+      success: true,
+    });
+  } else {
+    res.json({
+      message:
+        "Une erreur a été produite. Veuillez informer la personne en charge.",
+      success: false,
+    });
+  }
+}
+
 export default withApiAuthRequired(async function handler(req: any, res: any) {
   /* Select the right request */
   switch (req.method) {
@@ -119,6 +156,8 @@ export default withApiAuthRequired(async function handler(req: any, res: any) {
       return await insert(req, res);
     case "PATCH":
       return await updateOne(req, res);
+    case "DELETE":
+      return await deleteOne(req, res);
     default:
       break;
   }

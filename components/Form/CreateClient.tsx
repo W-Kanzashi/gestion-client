@@ -11,6 +11,8 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
+import { randUser, randParagraph, randBrand, randNumber } from "@ngneat/falso";
+
 export interface State extends SnackbarOrigin {
   open: boolean;
 }
@@ -44,17 +46,21 @@ const schema = yup
   .required();
 
 export default function CreateClient() {
+  const user = randUser();
+  const phone = randNumber({ min: 1000000000, max: 9999999999, length: 2 });
+  console.log(phone[0]);
+
   const defaultValues = {
-    address: "",
-    city: "",
-    company: "",
-    cp: "",
-    email: "",
-    firstname: "",
-    lastname: "",
-    phone: "",
-    tel: "",
-    info: "",
+    address: user.address.street,
+    city: user.address.city,
+    company: randBrand(),
+    cp: user.address.zipCode,
+    email: user.email,
+    firstname: user.firstName,
+    lastname: user.lastName,
+    phone: phone[0].toString(),
+    tel: phone[1].toString(),
+    info: randParagraph(),
   };
   /* Display the snackbar with default value */
   const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -159,7 +165,7 @@ export default function CreateClient() {
                 })}
               />
             )}
-            defaultValue={formValues.firstname}
+            defaultValue={formValues.lastname}
           />
           <Controller
             name="company"
@@ -176,7 +182,7 @@ export default function CreateClient() {
                 })}
               />
             )}
-            defaultValue={formValues.firstname}
+            defaultValue={formValues.company}
           />
           <Controller
             name="address"
@@ -193,7 +199,7 @@ export default function CreateClient() {
                 })}
               />
             )}
-            defaultValue={formValues.firstname}
+            defaultValue={formValues.address}
           />
           <Controller
             name="cp"
@@ -210,7 +216,7 @@ export default function CreateClient() {
                 })}
               />
             )}
-            defaultValue={formValues.firstname}
+            defaultValue={formValues.cp}
           />
           <Controller
             name="city"
@@ -227,7 +233,7 @@ export default function CreateClient() {
                 })}
               />
             )}
-            defaultValue={formValues.firstname}
+            defaultValue={formValues.city}
           />
           <Controller
             name="phone"
@@ -243,14 +249,13 @@ export default function CreateClient() {
                     <InputAdornment position="start">+33</InputAdornment>
                   ),
                 }}
-                inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
                 value={formValues.phone}
                 {...register("phone", {
                   onChange: handleInputChange,
                 })}
               />
             )}
-            defaultValue={formValues.firstname}
+            defaultValue={formValues.phone}
           />
           <Controller
             name="tel"
@@ -272,7 +277,7 @@ export default function CreateClient() {
                 })}
               />
             )}
-            defaultValue={formValues.firstname}
+            defaultValue={formValues.tel}
           />
           <Controller
             name="email"
@@ -289,7 +294,7 @@ export default function CreateClient() {
                 })}
               />
             )}
-            defaultValue={formValues.firstname}
+            defaultValue={formValues.phone}
           />
         </div>
         <Controller
@@ -309,7 +314,7 @@ export default function CreateClient() {
               })}
             />
           )}
-          defaultValue={formValues.firstname}
+          defaultValue={formValues.info}
         />
         <Button variant="contained" type="submit" className="bg-slate-800">
           Créer le Client

@@ -7,7 +7,7 @@ import EditMode from "@components/Client/EditMode";
 import ShowMode from "@components/Client/ShowMode";
 import Loading from "@components/Loading";
 
-export default function Client(props: any) {
+export default function Client() {
   /* State the Validate button */
   const [validateButton, setValidateButton] = useState(true);
 

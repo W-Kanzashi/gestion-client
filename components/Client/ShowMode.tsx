@@ -96,6 +96,25 @@ export default function ShowMode(props: any) {
     }
   };
 
+  // Delete the client
+  const handleDeleteClient = async () => {
+    const response = await fetch("/api/connectDB", {
+      method: "DELETE",
+      body: JSON.stringify(defaultFormValues),
+      headers: { "Content-type": "application/json" },
+    });
+    const data = await response.json();
+
+    if (data.success === true) {
+      setSnackBarOpen({ open: true, vertical: "top", horizontal: "center" });
+      setDisplayMessage("Le client a bien été supprimé.");
+      router.push("/");
+    } else {
+      setSnackBarOpen({ open: true, vertical: "top", horizontal: "center" });
+      setDisplayMessage("Une erreur : " + data.message + " est survenue");
+    }
+  };
+
   /* Insert new meeting event */
   async function clickHandler(): Promise<void> {
     // store form data
@@ -181,6 +200,13 @@ export default function ShowMode(props: any) {
             onClick={handleEditMode}
           >
             Modifier les informations client
+          </Button>
+          <Button
+            variant="contained"
+            className="bg-slate-800"
+            onClick={handleDeleteClient}
+          >
+            Supprimer le client
           </Button>
         </section>
         <Snackbar
