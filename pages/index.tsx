@@ -7,6 +7,9 @@ import { connectDB } from "./api/connectDB";
 import DisplayAllClient from "@components/DisplayAllClient";
 import Clients from "types/Clients";
 
+import Loading from "@components/Loading";
+import Error from "@components/Error";
+
 export default function Home({ clients }: any) {
   const [inputLastname, setInputLastname] = useState("");
   const [inputFirstname, setInputFirstname] = useState("");
@@ -25,8 +28,8 @@ export default function Home({ clients }: any) {
     setInputFirstname(lowerCase);
   }
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
+  if (isLoading) return <Loading />;
+  if (error) return <Error errorCode={error.message} />;
 
   if (user) {
     return (

@@ -6,6 +6,7 @@ import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import EditMode from "@components/Client/EditMode";
 import ShowMode from "@components/Client/ShowMode";
 import Loading from "@components/Loading";
+import Error from "@components/Error";
 
 export default function Client() {
   /* State the Validate button */
@@ -39,7 +40,7 @@ export default function Client() {
     fetcher
   );
 
-  if (error) return <div>failed to load</div>;
+  if (error) return <Error errorCode={error.message} />;
   if (!data) return <Loading />;
 
   return (
