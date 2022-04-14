@@ -16,7 +16,7 @@ export default function Error({ errorCode }: ErrorCode) {
         Réessayer
       </button>
       <p className="text-lg">
-        Si cette erreur continue de se produire veuillez l'indiquer à la
+        Si cette erreur continue de se produire veuillez l&apos;indiquer à la
         personne en charge.
       </p>
     </section>
