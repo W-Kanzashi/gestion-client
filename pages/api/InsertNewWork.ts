@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId } from "mongodb";
 import sanitize from "mongo-sanitize";
-import { withApiAuthRequired, getSession } from "@auth0/nextjs-auth0";
+import { withApiAuthRequired } from "@auth0/nextjs-auth0";
 
 interface Client {
   _id: string;

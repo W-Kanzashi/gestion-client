@@ -11,12 +11,15 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
+// Generate fake data
 import { randUser, randParagraph, randBrand, randNumber } from "@ngneat/falso";
 
+// Snackbar state
 export interface State extends SnackbarOrigin {
   open: boolean;
 }
 
+// Type to check the form data
 interface IFormInput {
   firstname: string;
   lastname: string;
@@ -30,6 +33,7 @@ interface IFormInput {
   info: string;
 }
 
+// Yup schema form validation
 const schema = yup
   .object({
     firstname: yup.string().required(),
@@ -45,11 +49,16 @@ const schema = yup
   })
   .required();
 
+/**
+ * Display and manage the form
+ * @returns JSX.Element
+ */
 export default function CreateClient() {
+  // User random data
   const user = randUser();
   const phone = randNumber({ min: 1000000000, max: 9999999999, length: 2 });
-  console.log(phone[0]);
 
+  // Form default values
   const defaultValues = {
     address: user.address.street,
     city: user.address.city,
@@ -70,7 +79,7 @@ export default function CreateClient() {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
-  /* Form validation */
+  /* Save and validate the form values */
   const {
     control,
     formState: { errors },
@@ -82,6 +91,7 @@ export default function CreateClient() {
     resolver: yupResolver(schema),
   });
 
+  // Form values state
   const [formValues, setFormValues] = useState(defaultValues);
   // Snackbar state
   const [snackBarOpen, setSnackBarOpen] = useState<State>({
@@ -90,22 +100,28 @@ export default function CreateClient() {
     horizontal: "center",
   });
   const { vertical, horizontal, open } = snackBarOpen;
+  // Snackbar message if there is an error
   const [displayMessage, setDisplayMessage] = useState(
     "Une erreur est intervenue veuillez réessayer !"
   );
 
-  const handleClose = () => {
+  // Handle the snackbar display
+  const handleSnackbarClose = () => {
     setSnackBarOpen({ ...snackBarOpen, open: false });
   };
 
+  // Handle the form input
   const handleInputChange = (e: any) => {
+    // Get the value of the input text
     const { name, value } = e.target;
+    // Update the default values of the form
     setFormValues({
       ...formValues,
       [name]: value,
     });
   };
 
+  // Send the form data to the database
   async function clickHandler(inputValue: IFormInput): Promise<void> {
     // store form data
     const response = await fetch("/api/connectDB", {
@@ -113,11 +129,13 @@ export default function CreateClient() {
       body: JSON.stringify(inputValue),
       headers: { "Content-type": "application/json" },
     });
+    // Wait for the response
     const data = await response.json();
 
+    // Display the snackbar
     if (data.message === "201") {
-      setSnackBarOpen({ open: true, vertical: "top", horizontal: "center" });
       setDisplayMessage("Le client a bien été ajouté");
+      setSnackBarOpen({ open: true, vertical: "top", horizontal: "center" });
     } else {
       setSnackBarOpen({ open: true, vertical: "top", horizontal: "center" });
     }
@@ -125,16 +143,19 @@ export default function CreateClient() {
 
   return (
     <>
+      {/* Form start */}
       <Box
         onSubmit={handleSubmit(clickHandler)}
         component="form"
         className="mb-20 flex flex-col gap-10"
       >
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-4">
+          {/* Controller is needed to render MUI without errors */}
           <Controller
             name="firstname"
             control={control}
             render={() => (
+              // Display the input text with the default value
               <TextField
                 label={errors.firstname ? "Un prénom est requis" : "Prénom"}
                 id="firstname"
@@ -319,15 +340,16 @@ export default function CreateClient() {
         <Button variant="contained" type="submit" className="bg-slate-800">
           Créer le Client
         </Button>
+        {/* Snackbar */}
         <Snackbar
           anchorOrigin={{ vertical, horizontal }}
           open={open}
           autoHideDuration={6000}
-          onClose={handleClose}
+          onClose={handleSnackbarClose}
           key={vertical + horizontal}
         >
           <Alert
-            onClose={handleClose}
+            onClose={handleSnackbarClose}
             severity="success"
             sx={{ width: "100%" }}
           >
@@ -335,6 +357,7 @@ export default function CreateClient() {
           </Alert>
         </Snackbar>
       </Box>
+      {/* Form end */}
     </>
   );
 }

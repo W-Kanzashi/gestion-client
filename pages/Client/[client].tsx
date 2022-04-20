@@ -8,6 +8,11 @@ import ShowMode from "@components/Client/ShowMode";
 import Loading from "@components/Loading";
 import Error from "@components/Error";
 
+/**
+ * Dynamic client information page
+ * @returns JSX.Element
+ */
+
 export default function Client() {
   /* State the Validate button */
   const [validateButton, setValidateButton] = useState(true);
@@ -24,9 +29,12 @@ export default function Client() {
     setEditMode(!editMode);
   }
 
+  // Use the internal router
   const router = useRouter();
+  // Get the client id from the url
   const { client } = router.query;
 
+  // Get the client info
   const fetcher = async (url: string): Promise<any> => {
     const response = await fetch(url, {
       method: "GET",
@@ -35,6 +43,7 @@ export default function Client() {
     return data;
   };
 
+  // Use SWR to fech the client info
   const { data, error } = useSWR(
     client ? `/api/user/${client}` : null,
     fetcher
@@ -45,6 +54,7 @@ export default function Client() {
 
   return (
     <section className="mx-auto max-w-7xl">
+      {/* Change between edition and show client data */}
       {editMode ? (
         <EditMode
           client={data.client}

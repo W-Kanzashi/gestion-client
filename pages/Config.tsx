@@ -5,10 +5,14 @@ import Loading from "@components/Loading";
 import Error from "@components/Error";
 
 export default function Config() {
+  // Get the authenticated user
   const { user, error, isLoading } = useUser();
 
+  // Wait for the api response
   if (isLoading) return <Loading />;
+  // If there was an error, show it
   if (error) return <Error errorCode={error.message} />;
+  // If there is data display it
   return (
     user && (
       <>
@@ -18,6 +22,7 @@ export default function Config() {
               <h2 className="text-2xl">Utilisateur : {user.name}</h2>
               <p className="text-xl">Email : {user.email}</p>
             </div>
+            {/* Link to the auth0 logout api */}
             <Link href="/api/auth/logout">
               <a className="button">Déconnexion</a>
             </Link>
@@ -27,5 +32,5 @@ export default function Config() {
     )
   );
 }
-
+// Display the login page if the user is not authenticated
 export const getServerSideProps = withPageAuthRequired();

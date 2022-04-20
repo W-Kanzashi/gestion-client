@@ -10,18 +10,25 @@ import Clients from "types/Clients";
 import Loading from "@components/Loading";
 import Error from "@components/Error";
 
+/**
+ * Home page that dipslay all clients
+ * @param { clients }
+ * @returns
+ */
 export default function Home({ clients }: any) {
   const [inputLastname, setInputLastname] = useState("");
   const [inputFirstname, setInputFirstname] = useState("");
   const { user, error, isLoading } = useUser();
   const history = useRouter();
 
+  // Search by lastname
   function inputHandlerLastname(e: any) {
     //convert input text to lower case
     let lowerCase = e.target.value.toLowerCase();
     setInputLastname(lowerCase);
   }
 
+  // Search by firstname
   function inputHandlerFirstname(e: any) {
     //convert input text to lower case
     let lowerCase = e.target.value.toLowerCase();
@@ -71,12 +78,16 @@ export default function Home({ clients }: any) {
   return history.push("/api/auth/login");
 }
 
+// Generate the page on the server and send the page to the user
+// Check Next js getServerSideProps for more information
 export async function getServerSideProps() {
+  // Not mandatory but intelisense will work
   type ClientInfo = Pick<Clients, "firstname" | "lastname">;
 
   /* Insert MongoDB authentication */
   const conn = connectDB();
 
+  // To store all clients
   let result = null;
   try {
     /* Connect to Mongo database */
@@ -100,6 +111,7 @@ export async function getServerSideProps() {
 
   return {
     props: {
+      // Pass the data to the page via props
       clients: JSON.parse(JSON.stringify(result)),
     },
   };
